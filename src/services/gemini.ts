@@ -146,11 +146,45 @@ Critical:
 
     const result: AnalysisResult = JSON.parse(candidateText);
     
-    // Validate offsets to avoid client-side highlight crashes
-    result.corrections = result.corrections.filter(corr => {
-      const actualSubstring = text.substring(corr.offset, corr.offset + corr.length);
-      return actualSubstring === corr.original;
-    });
+    // Validate and recover offsets to avoid client-side highlight crashes
+    const validatedCorrections: Correction[] = [];
+    for (const corr of result.corrections) {
+      if (!corr.original) continue;
+
+      // 1. If the offset is already correct, keep it
+      if (text.substring(corr.offset, corr.offset + corr.length) === corr.original) {
+        validatedCorrections.push(corr);
+        continue;
+      }
+
+      // 2. Otherwise, search for the original text in the string near the suggested offset
+      let foundIndex = -1;
+      const searchStart = Math.max(0, corr.offset - 25);
+      const searchEnd = Math.min(text.length, corr.offset + corr.length + 25);
+      const searchArea = text.substring(searchStart, searchEnd);
+      const localIndex = searchArea.indexOf(corr.original);
+
+      if (localIndex !== -1) {
+        foundIndex = searchStart + localIndex;
+      } else {
+        // 3. Fallback: search the entire text globally
+        foundIndex = text.indexOf(corr.original);
+      }
+
+      if (foundIndex !== -1) {
+        validatedCorrections.push({
+          ...corr,
+          offset: foundIndex,
+          length: corr.original.length
+        });
+      } else {
+        console.warn(`Could not find original text "${corr.original}" in input.`);
+      }
+    }
+    
+    // Sort corrections by offset ascending to ensure correct highlight rendering order
+    validatedCorrections.sort((a, b) => a.offset - b.offset);
+    result.corrections = validatedCorrections;
 
     return result;
   } catch (error: any) {
