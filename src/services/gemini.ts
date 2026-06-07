@@ -96,6 +96,12 @@ Apply the requested writing tone: "${tone}".
 Input text:
 "${text}"
 
+Punctuation Guidelines:
+- Pay close attention to punctuation issues.
+- Always suggest adding commas after introductory temporal adverbs or phrases (e.g., "Yesterday," or "Last year,").
+- Always suggest adding commas before coordinating conjunctions (like "but", "so", "and") when they join two independent clauses.
+- To suggest inserting a punctuation mark, select the word before it as the 'original' string and append the punctuation mark to it in the 'corrected' string (e.g. original: "Yesterday", corrected: "Yesterday,").
+
 Tone instructions:
 - "professional": Focus on clarity, conciseness, formal language, and active voice.
 - "casual": Natural, friendly, conversational, allowing contractions and relaxed language.
