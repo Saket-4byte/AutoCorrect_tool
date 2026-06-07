@@ -421,6 +421,36 @@ export function analyzeTextMock(text: string, tone: WritingTone = 'professional'
       explanation: "'Grammar' ends with '-ar', not '-er'."
     },
     {
+      pattern: /\bgoig\b/gi,
+      type: 'spelling' as const,
+      corrected: 'going',
+      explanation: "Corrected spelling to 'going'."
+    },
+    {
+      pattern: /\blove\s+this\s+to\b/gi,
+      type: 'grammar' as const,
+      corrected: 'love this tool',
+      explanation: "Corrected word usage: 'love this tool' is the intended meaning in this context."
+    },
+    {
+      pattern: /\bits\s+unique\b/gi,
+      type: 'grammar' as const,
+      corrected: "it's unique",
+      explanation: "Use the contraction 'it's' (it is) instead of the possessive 'its'."
+    },
+    {
+      pattern: /\bdoesnot\b/gi,
+      type: 'spelling' as const,
+      corrected: 'does not',
+      explanation: "Separated 'doesnot' into two words: 'does not'."
+    },
+    {
+      pattern: /\bsometime\b/gi,
+      type: 'grammar' as const,
+      corrected: 'sometimes',
+      explanation: "Corrected singular 'sometime' to plural adverb 'sometimes' for this context."
+    },
+    {
       pattern: /\byour\s+(beautiful|smart|welcome|going|doing)\b/gi,
       type: 'grammar' as const,
       corrected: (match: string) => match.toLowerCase().startsWith('your welcome') ? "you're welcome" : match.replace(/your/i, "you're"),
