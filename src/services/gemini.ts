@@ -72,7 +72,7 @@ const geminiResponseSchema = {
 export async function analyzeTextWithGemini(
   text: string,
   apiKey: string,
-  model: string = 'gemini-1.5-flash',
+  model: string = 'gemini-2.5-flash',
   tone: WritingTone = 'professional'
 ): Promise<AnalysisResult> {
   if (!text || text.trim() === '') {
@@ -98,13 +98,14 @@ Critical:
 - Ensure the 'correctedText' is the input text with ALL 'corrections' applied.
 - If the text is perfect, return corrections as an empty array and correctedText as the original text.`;
 
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
 
   try {
     const response = await fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'x-goog-api-key': apiKey,
       },
       body: JSON.stringify({
         contents: [
@@ -593,7 +594,7 @@ export function getMockDemoText(): string {
 export async function analyzeText(text: string, tone: WritingTone = 'professional'): Promise<AnalysisResult> {
   const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
   // Default to the high-performance Gemini Flash model
-  const model = 'gemini-1.5-flash';
+  const model = 'gemini-2.5-flash';
 
   if (apiKey && apiKey.trim() !== '') {
     try {
