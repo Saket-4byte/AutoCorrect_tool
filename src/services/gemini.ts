@@ -555,3 +555,25 @@ export function analyzeTextMock(text: string, tone: WritingTone = 'professional'
 export function getMockDemoText(): string {
   return `i think that this is teh best autocorrect tool you will recieve. Its very unique, in order to make your writing better! We accomodate all needs untill you are satisfied. You should of checked your grammer. your beautiful and your going to love this tool.`;
 }
+
+/**
+ * Unified entry point for text analysis.
+ * Uses developer environment API key if configured, otherwise falls back to local mock sandbox.
+ */
+export async function analyzeText(text: string, tone: WritingTone = 'professional'): Promise<AnalysisResult> {
+  const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+  // Default to the high-performance Gemini Flash model
+  const model = 'gemini-1.5-flash';
+
+  if (apiKey && apiKey.trim() !== '') {
+    try {
+      return await analyzeTextWithGemini(text, apiKey, model, tone);
+    } catch (error) {
+      console.warn('Live Gemini API call failed. Falling back to Sandbox Mode.', error);
+      return analyzeTextMock(text, tone);
+    }
+  }
+
+  // Fallback to local sandbox if no key is configured in env variables
+  return analyzeTextMock(text, tone);
+}

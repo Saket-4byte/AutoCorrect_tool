@@ -1,36 +1,18 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Header } from './components/Header';
 import { EditorPane } from './components/EditorPane';
 import { Sidebar } from './components/Sidebar';
-import { SettingsModal } from './components/SettingsModal';
 import { 
   type Correction, 
   type WritingTone, 
-  analyzeTextWithGemini, 
-  analyzeTextMock, 
+  analyzeText, 
   getMockDemoText 
 } from './services/gemini';
 import { generateHighlightedHtml } from './services/diff';
 
 function App() {
-  // Load configuration from localStorage on mount
   const [text, setText] = useState<string>('');
   const [tone, setTone] = useState<WritingTone>('professional');
-  
-  const [apiKey, setApiKey] = useState<string>(() => {
-    return localStorage.getItem('lumina_write_api_key') || '';
-  });
-  
-  const [model, setModel] = useState<string>(() => {
-    return localStorage.getItem('lumina_write_model') || 'gemini-2.0-flash';
-  });
-  
-  const [isDemoMode, setIsDemoMode] = useState<boolean>(() => {
-    const savedMode = localStorage.getItem('lumina_write_demo_mode');
-    return savedMode === null ? true : savedMode === 'true';
-  });
-
-  const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(false);
   const [isAnalyzing, setIsAnalyzing] = useState<boolean>(false);
   
   const [corrections, setCorrections] = useState<Correction[]>([]);
@@ -39,19 +21,6 @@ function App() {
   
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [activeTab, setActiveTab] = useState<'write' | 'review'>('write');
-
-  // Persist settings changes
-  useEffect(() => {
-    localStorage.setItem('lumina_write_api_key', apiKey);
-  }, [apiKey]);
-
-  useEffect(() => {
-    localStorage.setItem('lumina_write_model', model);
-  }, [model]);
-
-  useEffect(() => {
-    localStorage.setItem('lumina_write_demo_mode', String(isDemoMode));
-  }, [isDemoMode]);
 
   // Handle standard editor text modification
   const handleTextChange = (newText: string) => {
@@ -64,12 +33,12 @@ function App() {
     setActiveTab('write');
   };
 
-  // Load demo text and trigger preview immediately for a wow effect
+  // Load demo text and trigger preview immediately
   const handleLoadDemo = () => {
     handleTextChange(getMockDemoText());
   };
 
-  // Run AI / Mock analysis
+  // Run analysis (uses env API key if set, otherwise falls back to mock sandbox)
   const handleAnalyze = async () => {
     if (!text.trim()) return;
     
@@ -77,18 +46,7 @@ function App() {
     setActiveIndex(null);
     
     try {
-      let result;
-      if (isDemoMode) {
-        // Artificial delay for premium feel & mock checking simulator
-        await new Promise(resolve => setTimeout(resolve, 900));
-        result = analyzeTextMock(text, tone);
-      } else {
-        if (!apiKey) {
-          setIsSettingsOpen(true);
-          throw new Error('Please enter a Google Gemini API Key or use Demo Sandbox mode.');
-        }
-        result = await analyzeTextWithGemini(text, apiKey, model, tone);
-      }
+      const result = await analyzeText(text, tone);
       
       setCorrections(result.corrections);
       setSummaryText(result.summary);
@@ -101,37 +59,7 @@ function App() {
         setActiveTab('write');
       }
     } catch (err: any) {
-      const isQuotaError = 
-        String(err.message).toLowerCase().includes('quota') || 
-        String(err.message).toLowerCase().includes('rate limit') || 
-        String(err.message).toLowerCase().includes('billing') ||
-        String(err.message).toLowerCase().includes('key');
-        
-      if (isQuotaError) {
-        const confirmSwitch = window.confirm(
-          `Gemini AI Error: Rate limit/quota exceeded or invalid API key.\n\n` +
-          `Would you like to temporarily switch to "Demo Sandbox Mode" to test the tool offline?`
-        );
-        if (confirmSwitch) {
-          setIsDemoMode(true);
-          // Run analysis again in Mock mode immediately!
-          setIsAnalyzing(true);
-          setTimeout(() => {
-            const result = analyzeTextMock(text, tone);
-            setCorrections(result.corrections);
-            setSummaryText(result.summary);
-            setHasAnalyzed(true);
-            if (result.corrections.length > 0) {
-              setActiveTab('review');
-            } else {
-              setActiveTab('write');
-            }
-            setIsAnalyzing(false);
-          }, 800);
-        }
-      } else {
-        alert(`Checking failed: ${err.message || err}`);
-      }
+      alert(`Checking failed: ${err.message || err}`);
     } finally {
       setIsAnalyzing(false);
     }
@@ -213,11 +141,7 @@ function App() {
 
   return (
     <div className="app-container">
-      <Header 
-        isDemoMode={isDemoMode}
-        isApiKeyConfigured={!!apiKey}
-        onOpenSettings={() => setIsSettingsOpen(true)}
-      />
+      <Header />
 
       <div className="hero-section">
         <div className="hero-badge">
@@ -254,22 +178,9 @@ function App() {
           onSelectIndex={setActiveIndex}
           summary={summaryText}
           hasAnalyzed={hasAnalyzed}
-          isDemoMode={isDemoMode}
-          onOpenSettings={() => setIsSettingsOpen(true)}
           onAcceptAll={handleAcceptAllCorrections}
         />
       </main>
-
-      <SettingsModal 
-        isOpen={isSettingsOpen}
-        onClose={() => setIsSettingsOpen(false)}
-        apiKey={apiKey}
-        onSaveApiKey={setApiKey}
-        selectedModel={model}
-        onSelectModel={setModel}
-        isDemoMode={isDemoMode}
-        onToggleDemoMode={setIsDemoMode}
-      />
     </div>
   );
 }

@@ -168,7 +168,7 @@ export const EditorPane: React.FC<EditorPaneProps> = ({
             ) : (
               <>
                 <CheckCircle2 size={16} />
-                <span>Proofread text</span>
+                <span>Correct Grammar</span>
               </>
             )}
           </button>

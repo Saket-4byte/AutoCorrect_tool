@@ -10,8 +10,6 @@ interface SidebarProps {
   onSelectIndex: (index: number | null) => void;
   summary: string;
   hasAnalyzed: boolean;
-  isDemoMode: boolean;
-  onOpenSettings: () => void;
   onAcceptAll: () => void;
 }
 
@@ -23,11 +21,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onSelectIndex,
   summary,
   hasAnalyzed,
-  isDemoMode,
-  onOpenSettings,
   onAcceptAll
 }) => {
-  console.log('Sidebar corrections:', corrections);
   // Categorize counts
   const spellingCount = corrections.filter(c => c.type === 'spelling').length;
   const grammarCount = corrections.filter(c => c.type === 'grammar').length;
@@ -55,7 +50,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         
         {!hasAnalyzed ? (
           <p className="summary-instructions">
-            Enter your text and click the <strong>Proofread text</strong> button to begin checking.
+            Enter your text and click the <strong>Correct Grammar</strong> button to begin checking.
           </p>
         ) : (
           <div className="summary-stats-grid">
@@ -102,14 +97,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
             </button>
           )}
         </div>
-
-        {isDemoMode && hasAnalyzed && (
-          <div className="demo-warning-banner">
-            <p>
-              💡 <strong>Running in Demo Mode.</strong> Connect to <span className="settings-link" onClick={onOpenSettings}>Live Gemini AI</span> in settings ⚙️ for comprehensive checks of arbitrary text.
-            </p>
-          </div>
-        )}
 
         {!hasAnalyzed ? (
           <div className="suggestions-empty-state">
