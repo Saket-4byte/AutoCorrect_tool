@@ -15,6 +15,16 @@ export interface AnalysisResult {
 
 export type WritingTone = 'professional' | 'casual' | 'creative' | 'academic';
 
+// Startup logging to help developers identify if the API key is active
+const apiKeyEnv = import.meta.env.VITE_GEMINI_API_KEY;
+if (typeof window !== 'undefined') {
+  if (apiKeyEnv && apiKeyEnv.trim() !== '') {
+    console.log('%c[LuminaWrite] Live Gemini API Mode Active (VITE_GEMINI_API_KEY is configured).', 'color: #10b981; font-weight: bold;');
+  } else {
+    console.warn('%c[LuminaWrite] Sandbox Mode Active (No VITE_GEMINI_API_KEY found in environment). Using local simulated corrections.', 'color: #f59e0b; font-weight: bold;');
+  }
+}
+
 // JSON Schema for Gemini response validation
 const geminiResponseSchema = {
   type: 'OBJECT',
