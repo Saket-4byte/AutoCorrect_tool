@@ -1,73 +1,41 @@
-# React + TypeScript + Vite
+✨ LuminaWrite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+AI-Powered Writing Assistant | Grammarly Lite Built with React & Gemini AI
 
-Currently, two official plugins are available:
+LuminaWrite is a modern AI-powered writing assistant that helps users improve their writing by providing real-time grammar, spelling, punctuation, fluency, and style corrections. Inspired by Grammarly, the application offers an intuitive interface where users can review and apply AI-generated suggestions individually or all at once.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+🚀 Features
+✍️ AI-powered grammar and spelling correction
+📝 Punctuation and sentence structure improvements
+🎯 Multiple writing tones
+    Professional
+    Academic
+    Casual
+    Creative
+💡 Interactive suggestion panel
+✅ Apply individual or all suggestions
+⚡ Fast response using Google Gemini 2.5 Flash
+📱 Fully responsive UI
+🌙 Modern dark theme with glassmorphism design
+🎨 Smooth animations and clean user experience
 
-## React Compiler
+🛠️Tech Stack
+    Frontend
+    React 19
+    TypeScript
+    Vite
+AI
+  Google Gemini API
+  Gemini 2.5 Flash
+Styling
+  Vanilla CSS
+  Glassmorphism UI
+  Responsive Design
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+🎯 How It Works
+    Enter or paste your text.
+    Select your preferred writing tone.
+    Click Correct Grammar.
+    Review AI-generated suggestions.
+    Apply changes individually or all at once.
+    Copy your polished content.
